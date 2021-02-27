@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/185c8f30b6464e664cc7cb85240a05b63bea818b/cordova-ionic/index.d.ts",
+    "raw": "registry:dt/cordova-ionic#0.0.0+20160511233146",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/185c8f30b6464e664cc7cb85240a05b63bea818b/cordova-ionic/index.d.ts"
+  }
+}

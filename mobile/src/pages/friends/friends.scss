@@ -1,0 +1,26 @@
+page-friends {
+  .title {
+    color: #76ab77;
+  }
+
+  .rAS {
+    font-style: italic !important;
+  }
+
+  h2.notLoggedIn {
+    color: #909090;
+
+    ion-icon {
+      font-size: 600%;
+    }
+
+    text-align: center;
+  }
+
+  ion-card {
+  }
+
+  .ver {
+    color: #76ab77 !important;
+  }
+}

@@ -1,0 +1,11 @@
+cordova plugin rm cordova-plugin-console
+
+cordova build --release android
+
+MOVE THE APK TO ONEDAY FOLDER
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore android-release-unsigned.apk alias_name
+
+cd /Users/helios/Library/Android/sdk/build-tools/24.0.2
+
+./zipalign -v 4 /Users/helios/Documents/Helios/Ionic/OneDay/android-release-unsigned.apk /Users/helios/Documents/Helios/Ionic/OneDay/OneDay.apk

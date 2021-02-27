@@ -1,0 +1,300 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Edit Schedule: {{letterSelected}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <!--<ion-list inset>-->
+  <ion-item>
+    <ion-segment [(ngModel)]="modifier">
+      <ion-segment-button
+        value="same"
+        (ionSelect)="setModifier('same')"
+        [ngStyle]="{'color': STYLE_COLOR_GREEN, 'background-color': ASTYLE_SEG_SAME, 'opacity': '1'}"
+        >Same</ion-segment-button
+      >
+      <ion-segment-button
+        value="oe"
+        (ionSelect)="setModifier('oe')"
+        [ngStyle]="{'color': STYLE_COLOR_GREEN, 'background-color': ASTYLE_SEG_OE, 'opacity': '1'}"
+        >Odd/Even</ion-segment-button
+      >
+      <ion-segment-button
+        value="irregular"
+        (ionSelect)="setModifier('irregular')"
+        [ngStyle]="{'color': STYLE_COLOR_GREEN, 'background-color': ASTYLE_SEG_IRREGULAR, 'opacity': '1'}"
+        >Irregular</ion-segment-button
+      >
+    </ion-segment>
+  </ion-item>
+
+  <div [ngSwitch]="modifier">
+    <div *ngSwitchCase="'same'">
+      <ion-label> Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}} Period Class</ion-label>
+        <ion-input
+          #inputAll
+          type="text"
+          value="{{className1}}"
+          (focus)="onFocus('all', inputAll._value)"
+          (blur)="onBlur('all', inputAll._value)"
+        ></ion-input>
+      </ion-item>
+
+      <button ion-button block (click)="showRadio('1', 'same')">
+        Category: {{classCategory1}}
+      </button>
+
+      <div padding>
+        <button
+          ion-button
+          block
+          round
+          (click)="onSubmit(inputAll._value, inputAll._value, inputAll._value, inputAll._value, inputAll._value, inputAll._value, inputAll._value, inputAll._value)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'oe'">
+      <ion-label> Odd Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}} Odd Class</ion-label>
+        <ion-input
+          #inputOdd
+          type="text"
+          value="{{className1}}"
+          (focus)="onFocus('odd', inputOdd._value)"
+          (blur)="onBlur('odd', inputOdd._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('1', 'oe')">
+        Category: {{classCategory1}}
+      </button>
+
+      <ion-label> Even Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}} Even Class</ion-label>
+        <ion-input
+          #inputEven
+          type="text"
+          value="{{className2}}"
+          (focus)="onFocus('even', inputEven._value)"
+          (blur)="onBlur('even', inputEven._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('2', 'oe')">
+        Category: {{classCategory2}}
+      </button>
+      <div padding>
+        <button
+          ion-button
+          block
+          round
+          (click)="onSubmit(inputOdd._value, inputEven._value, inputOdd._value, inputEven._value, inputOdd._value, inputEven._value, inputOdd._value, inputEven._value)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'irregular'">
+      <ion-label> Day 1 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}1 Class</ion-label>
+        <ion-input
+          #inputOne
+          type="text"
+          value="{{className1}}"
+          (focus)="onFocus('1', inputOne._value)"
+          (blur)="onBlur('1', inputOne._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('1', 'irregular')">
+        Category 1: {{classCategory1}}
+      </button>
+      <ion-label> Day 2 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}2 Class</ion-label>
+        <ion-input
+          #inputTwo
+          type="text"
+          value="{{className2}}"
+          (focus)="onFocus('2', inputTwo._value)"
+          (blur)="onBlur('2', inputTwo._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('2', 'irregular')">
+        Category 2: {{classCategory2}}
+      </button>
+      <ion-label> Day 3 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}3 Class</ion-label>
+        <ion-input
+          #inputThree
+          type="text"
+          value="{{className3}}"
+          (focus)="onFocus('3', inputThree._value)"
+          (blur)="onBlur('3', inputThree._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('3', 'irregular')">
+        Category 3: {{classCategory3}}
+      </button>
+      <ion-label> Day 4 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}4 Class</ion-label>
+        <ion-input
+          #inputFour
+          type="text"
+          value="{{className4}}"
+          (focus)="onFocus('4', inputFour._value)"
+          (blur)="onBlur('4', inputFour._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('4', 'irregular')">
+        Category 4: {{classCategory4}}
+      </button>
+      <ion-label> Day 5 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}5 Class</ion-label>
+        <ion-input
+          #inputFive
+          type="text"
+          value="{{className5}}"
+          (focus)="onFocus('5', inputFive._value)"
+          (blur)="onBlur('5', inputFive._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('5', 'irregular')">
+        Category 5: {{classCategory5}}
+      </button>
+      <ion-label> Day 6 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}6 Class</ion-label>
+        <ion-input
+          #inputSix
+          type="text"
+          value="{{className6}}"
+          (focus)="onFocus('6', inputSix._value)"
+          (blur)="onBlur('6', inputSix._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('6', 'irregular')">
+        Category 6: {{classCategory6}}
+      </button>
+      <ion-label> Day 7 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}7 Class</ion-label>
+        <ion-input
+          #inputSeven
+          type="text"
+          value="{{className7}}"
+          (focus)="onFocus('7', inputSeven._value)"
+          (blur)="onBlur('7', inputSeven._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('7', 'irregular')">
+        Category 7: {{classCategory7}}
+      </button>
+      <ion-label> Day 8 Class: </ion-label>
+      <ion-item>
+        <ion-label floating>{{letterSelected}}8 Class</ion-label>
+        <ion-input
+          #inputEight
+          type="text"
+          value="{{className8}}"
+          (focus)="onFocus('8', inputEight._value)"
+          (blur)="onBlur('8', inputEight._value)"
+        ></ion-input>
+      </ion-item>
+      <button ion-button block (click)="showRadio('8', 'irregular')">
+        Category 8: {{classCategory8}}
+      </button>
+      <div padding>
+        <button
+          ion-button
+          block
+          round
+          (click)="onSubmit(inputOne._value, inputTwo._value, inputThree._value, inputFour._value, inputFive._value, inputSix._value, inputSeven._value, inputEight._value)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div padding-left padding-right>
+    <div padding-left padding-right>
+      <div padding-left padding-right>
+        <div padding-left padding-right>
+          <button ion-button block outline (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--<ion-label>
+        Day 1 Class:
+      </ion-label>
+        <ion-item>
+          <ion-label floating>{{letterSelected}} Odd Period Class</ion-label>
+          <ion-input #inputOdd focuser type="text" value="{{classNameOdd}}"></ion-input>
+        </ion-item>
+      <ion-item>
+
+        <button block (click)="showRadio(true)">
+          Change Category: {{classCategoryOdd}}
+        </button>
+      </ion-item>-->
+
+  <!--EVEN-->
+
+  <!--<ion-label>
+        Rotating Class:
+      </ion-label>
+      <ion-item>
+        <ion-segment [(ngModel)]="oddEvenSeg">
+          <ion-segment-button value="same" (ionSelect)="setOddEvenSeg('same')">Same</ion-segment-button>
+          <ion-segment-button value="other" (ionSelect)="setOddEvenSeg('other')">Other</ion-segment-button>
+        </ion-segment>
+      </ion-item>
+      <div [ngSwitch]="oddEvenSeg">
+        <div *ngSwitchCase="'same'">
+          <ion-item>
+            Class Name: {{inputOdd._value}}
+          </ion-item>
+          <ion-item>
+            Class Category: {{classCategoryOdd}}
+          </ion-item>
+          <div padding>
+            <button block (click)="onSubmit(inputOdd._value, inputOdd._value)">
+              Save
+            </button>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'other'">
+            <ion-item>
+              <ion-label floating>{{letterSelected}} Even Period Class</ion-label>
+              <ion-input #inputEven type="text" value="{{classNameEven}}"></ion-input>
+            </ion-item>
+          <ion-item>
+            <button block (click)="showRadio(false)">
+              Change Category: {{classCategoryEven}}
+            </button>
+          </ion-item>
+          
+          <div padding>
+            <button block (click)="onSubmit(inputOdd._value, inputEven._value)">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>-->
+
+  <!--</ion-list>-->
+</ion-content>

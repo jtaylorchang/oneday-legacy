@@ -1,0 +1,314 @@
+<ion-header color="primary">
+  <ion-navbar no-border-bottom color="primary" no-padding>
+    <ion-toolbar no-padding>
+      <ion-title no-padding text-wrap>
+        Day {{today.number}} ({{today.typeFull}})
+      </ion-title>
+      <ion-buttons end padding-right>
+        <ion-chip>
+          <ion-icon name="md-person" color="burnt"></ion-icon>
+          <ion-label color="secondary">@{{friendName}}</ion-label>
+          <button ion-button clear color="secondary" (click)="openFriendChip()">
+            <ion-icon name="md-eye"></ion-icon>
+          </button>
+        </ion-chip>
+        <button ion-button icon-only round no-padding (click)="onClickEdit()">
+          <ion-icon name="md-create"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+  <ion-toolbar no-border-top no-border-bottom color="primary" no-padding>
+    <ion-segment
+      [(ngModel)]="daySeg"
+      value="monday"
+      no-padding
+      class="padLR"
+      color="secondary"
+    >
+      <ion-segment-button
+        value="monday"
+        (ionSelect)="tabClick('monday')"
+        [ngStyle]="{'color': STYLE_COLOR_LIGHT, 'background-color': ASTYLE_SEG_MON, 'opacity': '1'}"
+        >M</ion-segment-button
+      >
+      <ion-segment-button
+        value="tuesday"
+        (ionSelect)="tabClick('tuesday')"
+        [ngStyle]="{'color': STYLE_COLOR_LIGHT, 'background-color': ASTYLE_SEG_TUES, 'opacity': '1'}"
+        >T</ion-segment-button
+      >
+      <ion-segment-button
+        value="wednesday"
+        (ionSelect)="tabClick('wednesday')"
+        [ngStyle]="{'color': STYLE_COLOR_LIGHT, 'background-color': ASTYLE_SEG_WED, 'opacity': '1'}"
+        >W</ion-segment-button
+      >
+      <ion-segment-button
+        value="thursday"
+        (ionSelect)="tabClick('thursday')"
+        [ngStyle]="{'color': STYLE_COLOR_LIGHT, 'background-color': ASTYLE_SEG_THURS, 'opacity': '1'}"
+        >T</ion-segment-button
+      >
+      <ion-segment-button
+        value="friday"
+        (ionSelect)="tabClick('friday')"
+        [ngStyle]="{'color': STYLE_COLOR_LIGHT, 'background-color': ASTYLE_SEG_FRI, 'opacity': '1'}"
+        >F</ion-segment-button
+      >
+      <ion-segment-button
+        value="monday2"
+        (ionSelect)="tabClick('monday2')"
+        [ngStyle]="{'color': STYLE_COLOR_LIGHT, 'background-color': ASTYLE_SEG_MONB, 'opacity': '1'}"
+        >M</ion-segment-button
+      >
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <div [ngSwitch]="showingFriendSchedule">
+    <div *ngSwitchCase="false">
+      <ion-card *ngFor="let period of periods">
+        <ion-card-content class="cardPeriod">
+          <ion-row class="row">
+            <ion-col
+              width-20
+              class="cardPeriodLetter"
+              (click)="cardClicked($event, period)"
+            >
+              <div class="cardOuter">
+                <div class="letterTextBox">{{period.letter}}</div>
+              </div>
+            </ion-col>
+            <ion-col width-80 class="cardPeriodContent">
+              <div class="cardOuter">
+                <div class="classTextBox">
+                  <ion-row>
+                    <ion-col width-90 (click)="cardClicked($event, period)">
+                      <span ion-text color="primary" class="className"
+                        >{{period.class}}</span
+                      >
+                      <div class="categoryTextBox" [ngSwitch]="period.isLunch">
+                        <div *ngSwitchCase="'0'">
+                          ({{period.timeStart}} - {{period.timeEnd}})
+                        </div>
+                        <div *ngSwitchDefault [ngSwitch]="period.isLunch">
+                          <div *ngSwitchCase="'1'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">1st Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'2'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">2nd Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'3'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">3rd Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'4'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">4th Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'All'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">All Lunches</div>
+                          </div>
+                          <div *ngSwitchDefault>
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">Lunch: Select a category</div>
+                          </div>
+                        </div>
+                      </div>
+                    </ion-col>
+                    <ion-col width-10 class="lunchBadge">
+                      <div [ngSwitch]="authorized">
+                        <div *ngSwitchCase="true">
+                          <div [ngSwitch]="period.isLunch">
+                            <div *ngSwitchCase="'0'"></div>
+                            <div *ngSwitchDefault>
+                              <div [ngSwitch]="period.isLunch">
+                                <div *ngSwitchCase="'1'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(0)"
+                                    >{{friendsInLunch1.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchCase="'All'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(0)"
+                                    >{{friendsInLunch1.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchDefault>
+                                  <ion-badge
+                                    item-right
+                                    color="primary"
+                                    (click)="clickLunchBadge(0)"
+                                    >{{friendsInLunch1.length}}</ion-badge
+                                  >
+                                </div>
+                              </div>
+                              <div [ngSwitch]="period.isLunch">
+                                <div *ngSwitchCase="'2'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(1)"
+                                    >{{friendsInLunch2.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchCase="'All'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(1)"
+                                    >{{friendsInLunch2.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchDefault>
+                                  <ion-badge
+                                    item-right
+                                    color="primary"
+                                    (click)="clickLunchBadge(1)"
+                                    >{{friendsInLunch2.length}}</ion-badge
+                                  >
+                                </div>
+                              </div>
+                              <div [ngSwitch]="period.isLunch">
+                                <div *ngSwitchCase="'3'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(2)"
+                                    >{{friendsInLunch3.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchCase="'All'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(2)"
+                                    >{{friendsInLunch3.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchDefault>
+                                  <ion-badge
+                                    item-right
+                                    color="primary"
+                                    (click)="clickLunchBadge(2)"
+                                    >{{friendsInLunch3.length}}</ion-badge
+                                  >
+                                </div>
+                              </div>
+                              <div [ngSwitch]="period.isLunch">
+                                <div *ngSwitchCase="'4'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(3)"
+                                    >{{friendsInLunch4.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchCase="'All'">
+                                  <ion-badge
+                                    item-right
+                                    color="burnt"
+                                    (click)="clickLunchBadge(3)"
+                                    >{{friendsInLunch4.length}}</ion-badge
+                                  >
+                                </div>
+                                <div *ngSwitchDefault>
+                                  <ion-badge
+                                    item-right
+                                    color="primary"
+                                    (click)="clickLunchBadge(3)"
+                                    >{{friendsInLunch4.length}}</ion-badge
+                                  >
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <div *ngSwitchCase="true">
+      <ion-card *ngFor="let period of currentFriendSchedule">
+        <ion-card-content class="cardPeriod">
+          <ion-row class="row">
+            <ion-col width-20 class="cardPeriodLetter">
+              <div class="cardOuter">
+                <div class="letterTextBox">{{period.letter}}</div>
+              </div>
+            </ion-col>
+            <ion-col width-80 class="cardPeriodContent">
+              <div class="cardOuter">
+                <div class="classTextBox">
+                  <ion-row>
+                    <ion-col>
+                      <span ion-text color="primary" class="className"
+                        >{{period.class}}</span
+                      >
+                      <div class="categoryTextBox" [ngSwitch]="period.isLunch">
+                        <div *ngSwitchCase="'0'">
+                          ({{period.timeStart}} - {{period.timeEnd}})
+                        </div>
+                        <div *ngSwitchDefault [ngSwitch]="period.isLunch">
+                          <div *ngSwitchCase="'1'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">1st Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'2'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">2nd Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'3'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">3rd Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'4'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">4th Lunch</div>
+                          </div>
+                          <div *ngSwitchCase="'All'">
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">All Lunches</div>
+                          </div>
+                          <div *ngSwitchDefault>
+                            ({{period.timeStart}} - {{period.timeEnd}})
+                            <div class="lunchInd">Lunch: Select a category</div>
+                          </div>
+                        </div>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!--CONSOLE-->
+  <!--<div padding>
+  <ion-item *ngFor="let dataLog of consoleOutputs" class="tinyText" style="word-wrap: break-word; word-break: break-all;">
+    {{dataLog}}
+  </ion-item>
+</div>-->
+  <!--END CONSOLE-->
+  <!--END DEVELOPMENT BUILD-->
+</ion-content>

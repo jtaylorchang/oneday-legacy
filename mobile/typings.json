@@ -1,0 +1,11 @@
+{
+  "dependencies": {},
+  "devDependencies": {},
+  "globalDependencies": {
+    "cordova": "registry:dt/cordova#0.0.0+20160819210047",
+    "cordova-ionic": "registry:dt/cordova-ionic#0.0.0+20160511233146",
+    "cordova-plugin-file": "registry:dt/cordova-plugin-file#0.0.0+20160916224823",
+    "cordova-plugin-file-transfer": "registry:dt/cordova-plugin-file-transfer#0.0.0+20160916155957",
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160726072212"
+  }
+}

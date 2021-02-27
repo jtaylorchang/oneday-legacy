@@ -1,0 +1,958 @@
+<ion-header color="primary">
+  <ion-navbar color="primary" no-padding>
+    <ion-toolbar no-padding>
+      <ion-title>Friends</ion-title>
+      <ion-buttons end>
+        <button ion-button icon-only round outline (click)="onClickRefresh()">
+          <ion-icon name="md-sync"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+  <ion-toolbar no-border-top no-border-bottom color="primary">
+    <!--<ion-searchbar color="primary"
+      [(ngModel)]="searchBar"
+      [showCancelButton]="shouldShowCancel"
+      (ionInput)="onSearchInput($event)"
+      (ionCancel)="onSearchCancel($event)">
+    </ion-searchbar>-->
+    <ion-segment [(ngModel)]="friendSeg" color="secondary" value="friends">
+      <ion-segment-button value="friends"> Friends </ion-segment-button>
+      <ion-segment-button text-wrap value="requests">
+        Requests
+        <ion-badge item-right color="secondary"
+          >{{requestArrayR.length}}</ion-badge
+        >
+      </ion-segment-button>
+      <ion-segment-button value="findfriends">
+        Find Friends
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding #content>
+  <div [ngSwitch]="loggedIn">
+    <div *ngSwitchCase="true">
+      <div [ngSwitch]="friendSeg">
+        <div *ngSwitchCase="'requests'">
+          <h6 class="title">Requests</h6>
+          <ion-label color="primary">Received</ion-label>
+          <div [ngSwitch]="requestArrayR.length">
+            <div *ngSwitchCase="0">
+              <ion-card>
+                <ion-item text-wrap>
+                  <h2>No friend requests pending</h2>
+                </ion-item>
+              </ion-card>
+            </div>
+            <div *ngSwitchDefault>
+              <ion-item no-lines no-padding>
+                <h2>Page {{currentPageR + 1}} of {{totalPagesR}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+              <div *ngFor="let page of requestArrayRPages">
+                <div *ngFor="let request of page">
+                  <div [ngSwitch]="currentPageR">
+                    <ion-card *ngSwitchCase="request.id">
+                      <ion-item text-wrap [ngSwitch]="request.verified">
+                        <h2 *ngSwitchCase="true">
+                          {{request.firstName}} {{request.lastName}}
+                          <ion-icon class="ver" name="ios-bowtie"></ion-icon>
+                        </h2>
+                        <h2 *ngSwitchDefault>
+                          {{request.firstName}} {{request.lastName}}
+                        </h2>
+                        <p>@{{request.username}}</p>
+                        <ion-buttons item-left>
+                          <button
+                            ion-button
+                            icon-only
+                            outline
+                            color="primary"
+                            (click)="onClickDeny(request)"
+                          >
+                            <ion-icon name="md-close"></ion-icon>
+                          </button>
+                        </ion-buttons>
+                        <ion-buttons item-left>
+                          <button
+                            ion-button
+                            icon-only
+                            color="primary"
+                            (click)="onClickAdd(request, true)"
+                          >
+                            <ion-icon name="md-checkmark"></ion-icon>
+                          </button>
+                        </ion-buttons>
+                      </ion-item>
+                    </ion-card>
+                  </div>
+                </div>
+              </div>
+              <ion-item text-wrap no-lines no-padding>
+                <h2>Page {{currentPageR + 1}} of {{totalPagesR}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(false, 'r')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+            </div>
+          </div>
+          <ion-label color="primary">Sent</ion-label>
+          <div [ngSwitch]="requestArrayS.length">
+            <div *ngSwitchCase="0">
+              <ion-card>
+                <ion-item text-wrap>
+                  <h2>No friend requests pending</h2>
+                </ion-item>
+              </ion-card>
+            </div>
+            <div *ngSwitchDefault>
+              <ion-item no-lines no-padding>
+                <h2>Page {{currentPageS + 1}} of {{totalPagesS}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(false, 's')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(false, 's')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(false, 's')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(false, 's')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+              <div *ngFor="let page of requestArraySPages">
+                <div *ngFor="let friend of page">
+                  <div [ngSwitch]="currentPageS">
+                    <ion-card *ngSwitchCase="friend.id">
+                      <div [ngSwitch]="friend.privacy">
+                        <div *ngSwitchCase="4">
+                          <ion-item
+                            text-wrap
+                            class="rAS"
+                            [ngSwitch]="friend.verified"
+                          >
+                            <h2 *ngSwitchCase="true">
+                              {{friend.firstName}} {{friend.lastName}}
+                              <ion-icon
+                                class="ver"
+                                name="ios-bowtie"
+                              ></ion-icon>
+                            </h2>
+                            <h2 *ngSwitchDefault>
+                              {{friend.firstName}} {{friend.lastName}}
+                            </h2>
+                            <p>@{{friend.username}} (Request Sent)</p>
+                          </ion-item>
+                        </div>
+                        <div *ngSwitchDefault>
+                          <ion-item
+                            text-wrap
+                            class="rAS"
+                            [ngSwitch]="friend.verified"
+                          >
+                            <p *ngSwitchCase="true">
+                              @{{friend.username}}
+                              <ion-icon
+                                class="ver"
+                                name="ios-bowtie"
+                              ></ion-icon>
+                              (Request Sent)
+                            </p>
+                            <p *ngSwitchDefault>
+                              @{{friend.username}} (Request Sent)
+                            </p>
+                          </ion-item>
+                        </div>
+                      </div>
+                    </ion-card>
+                  </div>
+                </div>
+              </div>
+              <ion-item text-wrap no-lines no-padding>
+                <h2>Page {{currentPageS + 1}} of {{totalPagesS}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(false, 's')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(false, 's')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(false, 's')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(false, 's')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'friends'">
+          <h6 class="title">Friends</h6>
+          <div [ngSwitch]="friendArray.length">
+            <div *ngSwitchCase="0">
+              <ion-card>
+                <ion-item text-wrap>
+                  <h2>
+                    You have no friends... search for a friend by name or look
+                    through the list below!
+                  </h2>
+                </ion-item>
+              </ion-card>
+            </div>
+            <div *ngSwitchDefault>
+              <ion-item no-lines no-padding>
+                <h2>Page {{currentPageF + 1}} of {{totalPagesF}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+              <div *ngFor="let page of friendArrayPages">
+                <div *ngFor="let friend of page">
+                  <div [ngSwitch]="currentPageF">
+                    <ion-card *ngSwitchCase="friend.id">
+                      <ion-item text-wrap [ngSwitch]="friend.verified">
+                        <h2 *ngSwitchCase="true">
+                          {{friend.firstName}} {{friend.lastName}}
+                          <ion-icon class="ver" name="ios-bowtie"></ion-icon>
+                        </h2>
+                        <h2 *ngSwitchDefault>
+                          {{friend.firstName}} {{friend.lastName}}
+                        </h2>
+                        <p>@{{friend.username}}</p>
+                      </ion-item>
+                    </ion-card>
+                  </div>
+                </div>
+              </div>
+              <ion-item text-wrap no-lines no-padding>
+                <h2>Page {{currentPageF + 1}} of {{totalPagesF}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(false, 'f')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'findfriends'">
+          <ion-fab right top>
+            <button ion-fab mini color="primary" (click)="onClickSearch()">
+              <ion-icon name="md-search"></ion-icon>
+            </button>
+          </ion-fab>
+          <h6 class="title">Find Friends</h6>
+          <div [ngSwitch]="showSearch">
+            <div *ngSwitchCase="true">
+              <ion-label color="primary"
+                >Search Results for "{{searchParam}}"</ion-label
+              >
+              <div [ngSwitch]="searchFoundUser">
+                <div *ngSwitchCase="true">
+                  <div [ngSwitch]="searchedUser.privacy">
+                    <div *ngSwitchCase="1">
+                      <ion-card>
+                        <div [ngSwitch]="searchedUser.direction">
+                          <div *ngSwitchCase="'R'">
+                            <ion-item
+                              text-wrap
+                              [ngSwitch]="searchedUser.verified"
+                            >
+                              <p *ngSwitchCase="true">
+                                @{{searchedUser.username}}
+                                <ion-icon
+                                  class="ver"
+                                  name="ios-bowtie"
+                                ></ion-icon>
+                              </p>
+                              <p *ngSwitchDefault>@{{searchedUser.username}}</p>
+                              <ion-buttons item-left>
+                                <button
+                                  ion-button
+                                  icon-only
+                                  outline
+                                  color="primary"
+                                  (click)="onClickDeny(searchedUser)"
+                                >
+                                  <ion-icon name="md-close"></ion-icon>
+                                </button>
+                              </ion-buttons>
+                              <ion-buttons item-left>
+                                <button
+                                  ion-button
+                                  icon-only
+                                  color="primary"
+                                  (click)="onClickAdd(searchedUser, true)"
+                                >
+                                  <ion-icon name="md-checkmark"></ion-icon>
+                                </button>
+                              </ion-buttons>
+                            </ion-item>
+                          </div>
+                          <div *ngSwitchDefault>
+                            <ion-item
+                              text-wrap
+                              [ngSwitch]="searchedUser.verified"
+                            >
+                              <p *ngSwitchCase="true">
+                                @{{searchedUser.username}}
+                                <ion-icon
+                                  class="ver"
+                                  name="ios-bowtie"
+                                ></ion-icon>
+                              </p>
+                              <p *ngSwitchDefault>@{{searchedUser.username}}</p>
+                              <ion-buttons item-left>
+                                <button
+                                  ion-button
+                                  icon-only
+                                  color="primary"
+                                  (click)="onClickAdd(searchedUser, false)"
+                                >
+                                  <ion-icon name="md-person-add"></ion-icon>
+                                </button>
+                              </ion-buttons>
+                            </ion-item>
+                          </div>
+                        </div>
+                      </ion-card>
+                    </div>
+                    <div *ngSwitchDefault>
+                      <ion-card>
+                        <div [ngSwitch]="searchedUser.direction">
+                          <div *ngSwitchCase="'R'">
+                            <ion-item
+                              text-wrap
+                              [ngSwitch]="searchedUser.verified"
+                            >
+                              <h2 *ngSwitchCase="true">
+                                {{searchedUser.firstName}}
+                                {{searchedUser.lastName}}
+                                <ion-icon
+                                  class="ver"
+                                  name="ios-bowtie"
+                                ></ion-icon>
+                              </h2>
+                              <h2 *ngSwitchDefault>
+                                {{searchedUser.firstName}}
+                                {{searchedUser.lastName}}
+                              </h2>
+                              <p>@{{searchedUser.username}}</p>
+                              <div [ngSwitch]="searchedUser.friendCount">
+                                <p *ngSwitchDefault>
+                                  Added {{searchedUser.friendCount}} People
+                                </p>
+                                <p *ngSwitchCase="1">Added 1 Person</p>
+                              </div>
+                              <ion-buttons item-left>
+                                <button
+                                  ion-button
+                                  icon-only
+                                  outline
+                                  color="primary"
+                                  (click)="onClickDeny(searchedUser)"
+                                >
+                                  <ion-icon name="md-close"></ion-icon>
+                                </button>
+                              </ion-buttons>
+                              <ion-buttons item-left>
+                                <button
+                                  ion-button
+                                  icon-only
+                                  color="primary"
+                                  (click)="onClickAdd(searchedUser, true)"
+                                >
+                                  <ion-icon name="md-checkmark"></ion-icon>
+                                </button>
+                              </ion-buttons>
+                            </ion-item>
+                          </div>
+                          <div *ngSwitchDefault>
+                            <ion-item
+                              text-wrap
+                              [ngSwitch]="searchedUser.verified"
+                            >
+                              <h2 *ngSwitchCase="true">
+                                {{searchedUser.firstName}}
+                                {{searchedUser.lastName}}
+                                <ion-icon
+                                  class="ver"
+                                  name="ios-bowtie"
+                                ></ion-icon>
+                              </h2>
+                              <h2 *ngSwitchDefault>
+                                {{searchedUser.firstName}}
+                                {{searchedUser.lastName}}
+                              </h2>
+                              <p>@{{searchedUser.username}}</p>
+                              <div [ngSwitch]="searchedUser.friendCount">
+                                <p *ngSwitchDefault>
+                                  Added {{searchedUser.friendCount}} People
+                                </p>
+                                <p *ngSwitchCase="1">Added 1 Person</p>
+                              </div>
+                              <ion-buttons item-left>
+                                <button
+                                  ion-button
+                                  icon-only
+                                  color="primary"
+                                  (click)="onClickAdd(searchedUser, false)"
+                                >
+                                  <ion-icon name="md-person-add"></ion-icon>
+                                </button>
+                              </ion-buttons>
+                            </ion-item>
+                          </div>
+                        </div>
+                      </ion-card>
+                    </div>
+                  </div>
+                </div>
+                <div *ngSwitchDefault>
+                  <ion-card>
+                    <ion-item text-wrap>
+                      <h2>No user found with matching username!</h2>
+                    </ion-item>
+                  </ion-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ion-label color="primary">Sort Options</ion-label>
+          <ion-item no-lines>
+            <ion-label>Alphabetical</ion-label>
+            <ion-toggle
+              [(ngModel)]="sortAlpha"
+              (ionChange)="onSortChange(0)"
+            ></ion-toggle>
+          </ion-item>
+          <ion-item no-lines>
+            <ion-label>Frequently Added</ion-label>
+            <ion-toggle
+              [(ngModel)]="sortPopularity"
+              (ionChange)="onSortChange(1)"
+            ></ion-toggle>
+          </ion-item>
+          <ion-item no-lines>
+            <ion-label>Grad Year (Fr. So. Jr. Sr.)</ion-label>
+            <ion-toggle
+              [(ngModel)]="sortGradYear"
+              (ionChange)="onSortChange(2)"
+            ></ion-toggle>
+          </ion-item>
+          <!--<ion-label color="primary">Sort Order</ion-label>
+          <ion-card>
+            <ion-card-content>
+            <p ion-text color="primary">(First)</p>
+            <ion-list>
+              <ion-item-group reorder="true" (ionItemReorder)="$event.applyTo(sortOptions)">
+                <ion-item *ngFor="let item of sortOptions">{{item}}</ion-item>
+              </ion-item-group>
+            </ion-list>
+            <p ion-text color="primary">(Last)</p>
+            </ion-card-content>
+          </ion-card>-->
+          <ion-label color="primary">Public People</ion-label>
+          <div [ngSwitch]="nonfriendArrayVisible.length">
+            <div *ngSwitchCase="0">
+              <ion-card>
+                <ion-item text-wrap>
+                  <h2>There are no friends you can add!</h2>
+                </ion-item>
+              </ion-card>
+            </div>
+            <div *ngSwitchDefault>
+              <ion-item no-lines no-padding>
+                <h2>Page {{currentPage + 1}} of {{totalPages}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(false, 'n')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(false, 'n')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(false, 'n')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(false, 'n')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+              <div *ngFor="let page of nonfriendArrayPages">
+                <div *ngFor="let friend of page">
+                  <div [ngSwitch]="currentPage">
+                    <ion-card *ngSwitchCase="friend.id">
+                      <div [ngSwitch]="friend.privacy">
+                        <div *ngSwitchCase="3">
+                          <div [ngSwitch]="friend.direction">
+                            <div *ngSwitchCase="'R'">
+                              <ion-item text-wrap [ngSwitch]="friend.verified">
+                                <p *ngSwitchCase="true">
+                                  @{{friend.username}}
+                                  <ion-icon
+                                    class="ver"
+                                    name="ios-bowtie"
+                                  ></ion-icon>
+                                </p>
+                                <p *ngSwitchDefault>@{{friend.username}}</p>
+                                <ion-buttons item-left>
+                                  <button
+                                    ion-button
+                                    icon-only
+                                    outline
+                                    color="primary"
+                                    (click)="onClickDeny(friend)"
+                                  >
+                                    <ion-icon name="md-close"></ion-icon>
+                                  </button>
+                                </ion-buttons>
+                                <ion-buttons item-left>
+                                  <button
+                                    ion-button
+                                    icon-only
+                                    color="primary"
+                                    (click)="onClickAdd(friend, true)"
+                                  >
+                                    <ion-icon name="md-checkmark"></ion-icon>
+                                  </button>
+                                </ion-buttons>
+                              </ion-item>
+                            </div>
+                            <div *ngSwitchDefault>
+                              <ion-item text-wrap [ngSwitch]="friend.verified">
+                                <p *ngSwitchCase="true">
+                                  @{{friend.username}}
+                                  <ion-icon
+                                    class="ver"
+                                    name="ios-bowtie"
+                                  ></ion-icon>
+                                </p>
+                                <p *ngSwitchDefault>@{{friend.username}}</p>
+                                <ion-buttons item-left>
+                                  <button
+                                    ion-button
+                                    icon-only
+                                    color="primary"
+                                    (click)="onClickAdd(friend, false)"
+                                  >
+                                    <ion-icon name="md-person-add"></ion-icon>
+                                  </button>
+                                </ion-buttons>
+                              </ion-item>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngSwitchCase="4">
+                          <div [ngSwitch]="friend.direction">
+                            <div *ngSwitchCase="'R'">
+                              <ion-item text-wrap [ngSwitch]="friend.verified">
+                                <h2 *ngSwitchCase="true">
+                                  {{friend.firstName}} {{friend.lastName}}
+                                  <ion-icon
+                                    class="ver"
+                                    name="ios-bowtie"
+                                  ></ion-icon>
+                                </h2>
+                                <h2 *ngSwitchDefault>
+                                  {{friend.firstName}} {{friend.lastName}}
+                                </h2>
+                                <p>@{{friend.username}}</p>
+                                <div [ngSwitch]="friend.friendCount">
+                                  <p *ngSwitchDefault>
+                                    Added {{friend.friendCount}} People
+                                  </p>
+                                  <p *ngSwitchCase="1">Added 1 Person</p>
+                                </div>
+                                <ion-buttons item-left>
+                                  <button
+                                    ion-button
+                                    icon-only
+                                    outline
+                                    color="primary"
+                                    (click)="onClickDeny(friend)"
+                                  >
+                                    <ion-icon name="md-close"></ion-icon>
+                                  </button>
+                                </ion-buttons>
+                                <ion-buttons item-left>
+                                  <button
+                                    ion-button
+                                    icon-only
+                                    color="primary"
+                                    (click)="onClickAdd(friend, true)"
+                                  >
+                                    <ion-icon name="md-checkmark"></ion-icon>
+                                  </button>
+                                </ion-buttons>
+                              </ion-item>
+                            </div>
+                            <div *ngSwitchDefault>
+                              <ion-item text-wrap [ngSwitch]="friend.verified">
+                                <h2 *ngSwitchCase="true">
+                                  {{friend.firstName}} {{friend.lastName}}
+                                  <ion-icon
+                                    class="ver"
+                                    name="ios-bowtie"
+                                  ></ion-icon>
+                                </h2>
+                                <h2 *ngSwitchDefault>
+                                  {{friend.firstName}} {{friend.lastName}}
+                                </h2>
+                                <p>@{{friend.username}}</p>
+                                <div [ngSwitch]="friend.friendCount">
+                                  <p *ngSwitchDefault>
+                                    Added {{friend.friendCount}} People
+                                  </p>
+                                  <p *ngSwitchCase="1">Added 1 Person</p>
+                                </div>
+                                <ion-buttons item-left>
+                                  <button
+                                    ion-button
+                                    icon-only
+                                    color="primary"
+                                    (click)="onClickAdd(friend, false)"
+                                  >
+                                    <ion-icon name="md-person-add"></ion-icon>
+                                  </button>
+                                </ion-buttons>
+                              </ion-item>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ion-card>
+                  </div>
+                </div>
+              </div>
+              <ion-item text-wrap no-lines no-padding>
+                <h2>Page {{currentPage + 1}} of {{totalPages}}</h2>
+
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickFirstPage(true, 'n')"
+                  >
+                    <ion-icon name="ios-skip-backward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickPrevPage(true, 'n')"
+                  >
+                    <ion-icon name="ios-arrow-back"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickNextPage(true, 'n')"
+                  >
+                    <ion-icon name="ios-arrow-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+                <ion-buttons item-left>
+                  <button
+                    ion-button
+                    icon-only
+                    outline
+                    color="primary"
+                    (click)="onClickLastPage(true, 'n')"
+                  >
+                    <ion-icon name="ios-skip-forward"></ion-icon>
+                  </button>
+                </ion-buttons>
+              </ion-item>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngSwitchCase="false">
+      <h2 class="notLoggedIn">
+        <p>
+          <ion-icon name="ios-thunderstorm-outline"></ion-icon>
+        </p>
+        Sorry, you must be logged in to use this feature!
+      </h2>
+    </div>
+  </div>
+</ion-content>

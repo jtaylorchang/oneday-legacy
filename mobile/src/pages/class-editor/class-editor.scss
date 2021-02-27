@@ -1,0 +1,25 @@
+page-class-editor {
+  .centerItem {
+    text-align: center;
+  }
+}
+
+.alertClass {
+  text-transform: capitalize !important;
+
+  ion-label {
+    text-transform: capitalize !important;
+  }
+
+  ion-item {
+    text-transform: capitalize !important;
+  }
+
+  ion-button {
+    text-transform: capitalize !important;
+  }
+
+  ion-list {
+    text-transform: capitalize !important;
+  }
+}

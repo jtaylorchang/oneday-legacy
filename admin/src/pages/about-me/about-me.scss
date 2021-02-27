@@ -1,0 +1,47 @@
+page-about-me {
+  .LR {
+    //padding-top: 25% !important;
+  }
+
+  .errorCode {
+    color: #f53d3d;
+  }
+
+  .ver {
+    color: #76ab77 !important;
+  }
+
+  .terms {
+    font-size: 90%;
+  }
+
+  .termstiny {
+    ion-label {
+      font-size: 75% !important;
+    }
+
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .priv {
+    text-align: center !important;
+    font-size: 80%;
+  }
+
+  .privG {
+    color: #76ab77 !important;
+  }
+
+  .vertical > * {
+    //display: flex !important;
+    align-content: center !important;
+    align-items: center !important;
+  }
+}
+
+.ascBtnEdit {
+  ion-icon {
+    color: #76ab77 !important;
+  }
+}

@@ -1,0 +1,19 @@
+page-user-management {
+  .ava {
+    font-size: 200%;
+  }
+
+  h2.notLoggedIn {
+    color: #909090;
+
+    ion-icon {
+      font-size: 600%;
+    }
+
+    text-align: center;
+  }
+
+  .tinytext {
+    font-size: 80% !important;
+  }
+}

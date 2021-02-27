@@ -1,0 +1,188 @@
+<ion-header color="primary">
+  <ion-navbar color="primary">
+    <ion-title>OneDay Admin Console: @{{username}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div [ngSwitch]="loggedIn">
+    <div *ngSwitchCase="true">
+      <!--
+        display a users information and then preferences as toggles
+
+        -->
+      <ion-label color="primary">Account Details</ion-label>
+      <ion-card>
+        <ion-item [ngSwitch]="verified">
+          <h2 *ngSwitchCase="true" [ngSwitch]="super">
+            {{firstName}} {{lastName}}
+            <ion-icon
+              *ngSwitchCase="true"
+              class="ver"
+              name="md-ribbon"
+            ></ion-icon
+            ><ion-icon
+              *ngSwitchDefault
+              class="ver"
+              name="ios-bowtie"
+            ></ion-icon>
+          </h2>
+          <h2 *ngSwitchDefault>{{firstName}} {{lastName}}</h2>
+          <p>@{{username}}</p>
+          <p>{{gradYear}}</p>
+          <ion-buttons item-left>
+            <button
+              ion-button
+              icon-only
+              color="primary"
+              (click)="onClickEdit()"
+            >
+              <ion-icon name="md-create"></ion-icon>
+            </button>
+            <button
+              ion-button
+              icon-only
+              color="primary"
+              (click)="onClickLogout()"
+            >
+              <ion-icon name="md-exit"></ion-icon>
+            </button>
+          </ion-buttons>
+        </ion-item>
+      </ion-card>
+
+      <ion-label color="primary">Privacy</ion-label>
+      <ion-card>
+        <ion-row class="priv" no-padding>
+          <ion-col width-20 [ngSwitch]="nPrivacy">
+            <div *ngSwitchDefault>Friggin Ninja</div>
+            <div *ngSwitchCase="0" class="privG">Friggin Ninja</div>
+          </ion-col>
+          <ion-col width-20 [ngSwitch]="nPrivacy">
+            <div *ngSwitchDefault>Covert Narc</div>
+            <div *ngSwitchCase="1" class="privG">Covert Narc</div>
+          </ion-col>
+          <ion-col width-20 [ngSwitch]="nPrivacy">
+            <div *ngSwitchDefault>Average Joe</div>
+            <div *ngSwitchCase="2" class="privG">Average Joe</div>
+          </ion-col>
+          <ion-col width-20 [ngSwitch]="nPrivacy">
+            <div *ngSwitchDefault>Friendly</div>
+            <div *ngSwitchCase="3" class="privG">Friendly</div>
+          </ion-col>
+          <ion-col width-20 [ngSwitch]="nPrivacy">
+            <div *ngSwitchDefault>Free Spirit</div>
+            <div *ngSwitchCase="4" class="privG">Free Spirit</div>
+          </ion-col>
+        </ion-row>
+        <ion-item no-lines>
+          <ion-range
+            min="0"
+            max="4"
+            value="2"
+            step="1"
+            snaps="true"
+            color="primary"
+            [(ngModel)]="nPrivacy"
+            (ionChange)="onPrivacyChange()"
+          >
+            <ion-icon range-left name="md-man"></ion-icon>
+            <ion-icon range-right name="md-body"></ion-icon>
+          </ion-range>
+        </ion-item>
+        <ion-item text-wrap [ngSwitch]="nPrivacy" no-padding>
+          <ul *ngSwitchCase="0">
+            <li>You are completely invisible</li>
+            <li>
+              You can add friends and others can accept but cannot add you first
+            </li>
+            <li>Recommended for parents, relatives, or non-Nashoba friends</li>
+          </ul>
+          <ul *ngSwitchCase="1">
+            <li>You can only be added by searching exact username</li>
+            <li>Your personal details are hidden to nonfriends in search</li>
+            <li>Recommended for recluses</li>
+          </ul>
+          <ul *ngSwitchCase="2">
+            <li>You can only be added by searching exact username</li>
+            <li>Recommended for teachers</li>
+          </ul>
+          <ul *ngSwitchCase="3">
+            <li>You are shown in the Find Friends list</li>
+            <li>Your personal details are hidden to nonfriends in list</li>
+            <li>Recommended for students who want a little privacy</li>
+          </ul>
+          <ul *ngSwitchCase="4">
+            <li>You are shown in the Find Friends list</li>
+            <li>
+              Recommended for outgoing students and student body officials or
+              figures
+            </li>
+          </ul>
+        </ion-item>
+        <ion-row no-padding>
+          <ion-col>
+            <button
+              ion-button
+              icon-left
+              block
+              small
+              (click)="onClickPrivacySave()"
+            >
+              <ion-icon name="md-cloud-upload"></ion-icon>
+              <div>Save Privacy Settings</div>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </div>
+    <div *ngSwitchCase="false">
+      <div [ngSwitch]="LR" class="vertical">
+        <div *ngSwitchCase="'login'" padding class="LR">
+          <ion-row>
+            <ion-item color="secondary" class="inUsername" no-lines>
+              <ion-label stacked>USERNAME</ion-label>
+              <ion-input
+                #inputUsername
+                type="text"
+                placeholder="username"
+                value=""
+                [(ngModel)]="nUsername"
+              >
+              </ion-input>
+            </ion-item>
+          </ion-row>
+          <ion-row>
+            <ion-item color="secondary" no-lines>
+              <ion-label stacked>PASSWORD</ion-label>
+              <ion-input
+                #inputPassword
+                type="password"
+                placeholder="password"
+                value=""
+                [(ngModel)]="nPassword"
+              >
+              </ion-input>
+            </ion-item>
+          </ion-row>
+          <div padding>
+            <ion-row>
+              <button
+                ion-button
+                full
+                large
+                color="primary"
+                (click)="onSubmitLogin(inputUsername._value, inputPassword._value)"
+                class="btnSubmit"
+                mode="ios"
+              >
+                LOGIN
+              </button>
+            </ion-row>
+          </div>
+        </div>
+        <ion-item class="errorCode"> {{errorCode}} </ion-item>
+      </div>
+    </div>
+  </div>
+</ion-content>

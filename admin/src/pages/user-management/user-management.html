@@ -1,0 +1,184 @@
+<ion-header color="primary">
+  <ion-navbar color="primary" no-padding>
+    <ion-toolbar no-padding>
+      <ion-title>User Management</ion-title>
+
+      <ion-buttons end>
+        <button ion-button icon-only round outline (click)="onClickRefresh()">
+          <ion-icon name="md-sync"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+  <ion-toolbar no-border-top no-border-bottom color="primary">
+    <ion-searchbar
+      color="primary"
+      [(ngModel)]="searchBar"
+      [showCancelButton]="shouldShowCancel"
+      (ionInput)="onSearchInput($event)"
+      (ionCancel)="onSearchCancel($event)"
+    >
+    </ion-searchbar>
+    <ion-buttons end>
+      <button
+        ion-button
+        icon-only
+        color="secondary"
+        (click)="onClickSearchOptions()"
+      >
+        <ion-icon name="md-options"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <div [ngSwitch]="authorized">
+    <div *ngSwitchCase="true">
+      <ion-grid>
+        <ion-row *ngFor="let row of grid">
+          <ion-col *ngFor="let user of row">
+            <ion-card>
+              <ion-item [ngSwitch]="user.verified" text-wrap>
+                <ion-avatar item-left [ngSwitch]="user.suspended" class="ava">
+                  <div
+                    *ngSwitchCase="true"
+                    [ngSwitch]="user.statusType"
+                    class="stSuspended"
+                  >
+                    <ion-icon
+                      *ngSwitchCase="'~~ios~~'"
+                      color="danger"
+                      name="logo-apple"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngSwitchCase="'~~android~~'"
+                      color="danger"
+                      name="logo-android"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngSwitchCase="'~~NA~~'"
+                      color="danger"
+                      name="ios-contact"
+                    ></ion-icon>
+                  </div>
+                  <div
+                    *ngSwitchDefault
+                    [ngSwitch]="user.statusType"
+                    class="stNormal"
+                  >
+                    <ion-icon
+                      *ngSwitchCase="'~~ios~~'"
+                      color="burnt"
+                      name="logo-apple"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngSwitchCase="'~~android~~'"
+                      color="burnt"
+                      name="logo-android"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngSwitchCase="'~~NA~~'"
+                      color="burnt"
+                      name="ios-contact"
+                    ></ion-icon>
+                  </div>
+                </ion-avatar>
+                <h2
+                  *ngSwitchCase="true"
+                  [ngSwitch]="user.super"
+                  ion-text
+                  color="primary"
+                >
+                  {{user.lastName}}, {{user.firstName}}
+                  <ion-icon
+                    *ngSwitchCase="true"
+                    class="ver"
+                    name="md-ribbon"
+                  ></ion-icon
+                  ><ion-icon
+                    *ngSwitchDefault
+                    class="ver"
+                    name="ios-bowtie"
+                  ></ion-icon>
+                </h2>
+                <h2 *ngSwitchDefault ion-text color="primary">
+                  {{user.lastName}}, {{user.firstName}}
+                </h2>
+                <p>@{{user.username}}</p>
+                <p class="tinytext">#:{{user.uid}}</p>
+                <p class="tinytext">
+                  {{user.lastActive}} ({{user.inactivity}} days)
+                </p>
+                <p class="tinytext">P{{user.privacy}} G{{user.gradYear}}</p>
+              </ion-item>
+              <ion-row [ngSwitch]="user.expired">
+                <ion-col>
+                  <button
+                    ion-button
+                    icon-left
+                    clear
+                    small
+                    block
+                    [ngSwitch]="user.suspended"
+                    (click)="onClickBlock(user)"
+                  >
+                    <ion-icon *ngSwitchCase="true" name="md-eye"></ion-icon>
+                    <ion-icon *ngSwitchDefault name="md-eye-off"></ion-icon>
+                    <div *ngSwitchCase="true">Whitelist</div>
+                    <div *ngSwitchDefault>Blacklist</div>
+                  </button>
+                </ion-col>
+                <ion-col>
+                  <button
+                    ion-button
+                    icon-left
+                    clear
+                    small
+                    block
+                    [ngSwitch]="user.verified"
+                    (click)="onClickPromote(user)"
+                  >
+                    <ion-icon
+                      *ngSwitchCase="false"
+                      name="ios-bowtie"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngSwitchCase="true"
+                      name="ios-bowtie-outline"
+                    ></ion-icon>
+                    <div *ngSwitchCase="false">Promote</div>
+                    <div *ngSwitchCase="true">Demote</div>
+                  </button>
+                </ion-col>
+                <ion-col *ngSwitchCase="true">
+                  <button
+                    ion-button
+                    icon-left
+                    clear
+                    small
+                    block
+                    color="danger"
+                    [disabled]="!superUser"
+                    (click)="onClickTerminate(user)"
+                  >
+                    <ion-icon name="md-trash"></ion-icon>
+                    <div>Terminate</div>
+                  </button>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div *ngSwitchCase="false">
+      <h2 class="notLoggedIn">
+        <p>
+          <ion-icon name="ios-thunderstorm-outline"></ion-icon>
+        </p>
+        Sorry, you must be logged in to use this feature!
+      </h2>
+    </div>
+  </div>
+</ion-content>

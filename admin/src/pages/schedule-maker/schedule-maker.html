@@ -1,0 +1,965 @@
+<ion-header color="primary">
+  <ion-navbar color="primary" no-padding>
+    <ion-toolbar no-padding>
+      <ion-title>Schedule Editor</ion-title>
+      <ion-buttons end [ngSwitch]="needsUpdate" color="secondary">
+        <!--<button ion-button icon-only round outline (click)="onClickUpload()"><ion-icon name="md-cloud-upload"></ion-icon></button>-->
+        <button ion-button icon-start round outline (click)="onClickDownload()">
+          <ion-icon name="md-cloud-download"></ion-icon> Refresh
+        </button>
+        <button
+          [disabled]="!needsUpdate"
+          ion-button
+          icon-start
+          solid
+          color="burnt"
+          (click)="onClickSync()"
+        >
+          <ion-icon name="md-sync"></ion-icon> Sync Changes
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div [ngSwitch]="authorized">
+    <div *ngSwitchCase="true">
+      <div [ngSwitch]="showJSONUploader">
+        <div *ngSwitchCase="true">
+          <div>
+            <ion-label stacked color="primary">JSON Uploader</ion-label>
+            <ion-textarea
+              [(ngModel)]="jsonTextArea"
+              placeholder="Paste JSON here!"
+            ></ion-textarea>
+            <button ion-button round block (click)="onClickUploadJSON()">
+              <ion-icon name="md-cloud-upload"></ion-icon> Upload JSON
+            </button>
+          </div>
+        </div>
+      </div>
+      <ion-segment
+        [(ngModel)]="editSeg"
+        color="cpOrange"
+        (ionChange)="onEditSegChanged()"
+        padding-left
+        padding-right
+      >
+        <ion-segment-button value="settings"> Settings </ion-segment-button>
+        <ion-segment-button value="schedule"> Schedule </ion-segment-button>
+      </ion-segment>
+      <div [ngSwitch]="loaded">
+        <div *ngSwitchCase="true">
+          <div [ngSwitch]="editSeg">
+            <div *ngSwitchCase="'settings'">
+              <ion-row>
+                <ion-label color="primary">Properties:</ion-label>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-card>
+                    <ion-item>
+                      <h2 ion-text color="primary">VERSION</h2>
+                      <p>{{us.dataSettings.version}}</p>
+                      <ion-buttons item-left>
+                        <button
+                          ion-button
+                          icon-only
+                          color="primary"
+                          (click)="onClickEditVersion()"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                        </button>
+                      </ion-buttons>
+                    </ion-item>
+                  </ion-card>
+                </ion-col>
+                <ion-col>
+                  <ion-card>
+                    <ion-item>
+                      <h2 ion-text color="primary">REQ</h2>
+                      <p>{{us.dataSettings.req}}</p>
+                      <ion-buttons item-left>
+                        <button
+                          ion-button
+                          icon-only
+                          color="primary"
+                          (click)="onClickEditReq()"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                        </button>
+                      </ion-buttons>
+                    </ion-item>
+                  </ion-card>
+                </ion-col>
+                <ion-col>
+                  <ion-card>
+                    <ion-item>
+                      <h2 ion-text color="primary">MANDATORY</h2>
+                      <p>{{us.dataSettings.mandatory}}</p>
+                      <ion-buttons item-left>
+                        <button
+                          ion-button
+                          icon-only
+                          color="primary"
+                          (click)="onClickEditMandatory()"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                        </button>
+                      </ion-buttons>
+                    </ion-item>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-label color="primary">Lunches:</ion-label>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">1st</h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.lunch1">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class}}</h2>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickLunchDelete('1', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickLunchAdd('1')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">2nd</h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.lunch2">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class}}</h2>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickLunchDelete('2', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickLunchAdd('2')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">3rd</h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.lunch3">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class}}</h2>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickLunchDelete('3', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickLunchAdd('3')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">4th</h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.lunch4">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class}}</h2>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickLunchDelete('4', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickLunchAdd('4')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">All</h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.lunchAll">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class}}</h2>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickLunchDelete('All', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickLunchAdd('All')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">
+                          N.A.C.
+                        </h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.lunchNAC">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class}}</h2>
+                      </ion-item>
+                      <ion-row>
+                        <button ion-button icon-left clear small block>
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button ion-button icon-left clear block>
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-label color="primary">Times:</ion-label>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">Reg</h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.timeRegularR">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class.timeStart}}</h2>
+                        <p>{{class.timeEnd}}</p>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeEdit(class)"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                          Edit
+                        </button>
+                      </ion-row>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeDelete('timeRegularR', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickTimeAdd('timeRegularR')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">
+                          Reg w/ AP
+                        </h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row
+                    *ngFor="let class of us.dataSettings.timeRegularWithAPR"
+                  >
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class.timeStart}}</h2>
+                        <p>{{class.timeEnd}}</p>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeEdit(class)"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                          Edit
+                        </button>
+                      </ion-row>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeDelete('timeRegularWithAPR', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickTimeAdd('timeRegularWithAPR')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">LS</h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row *ngFor="let class of us.dataSettings.timeLateStartR">
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class.timeStart}}</h2>
+                        <p>{{class.timeEnd}}</p>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeEdit(class)"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                          Edit
+                        </button>
+                      </ion-row>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeDelete('timeLateStartR', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickTimeAdd('timeLateStartR')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">
+                          ER w/ AP
+                        </h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row
+                    *ngFor="let class of us.dataSettings.timeEarlyReleaseWithAPR"
+                  >
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class.timeStart}}</h2>
+                        <p>{{class.timeEnd}}</p>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeEdit(class)"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                          Edit
+                        </button>
+                      </ion-row>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeDelete('timeEarlyReleaseWithAPR', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickTimeAdd('timeEarlyReleaseWithAPR')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">
+                          ER w/o AP
+                        </h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row
+                    *ngFor="let class of us.dataSettings.timeEarlyReleaseWithoutAPR"
+                  >
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class.timeStart}}</h2>
+                        <p>{{class.timeEnd}}</p>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeEdit(class)"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                          Edit
+                        </button>
+                      </ion-row>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeDelete('timeEarlyReleaseWithoutAPR', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickTimeAdd('timeEarlyReleaseWithoutAPR')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+                <ion-col>
+                  <ion-row>
+                    <ion-card>
+                      <ion-item>
+                        <h1 ion-text color="primary" class="centerText">
+                          ER All w/o AP
+                        </h1>
+                      </ion-item>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row
+                    *ngFor="let class of us.dataSettings.timeEarlyReleaseAllWithoutAPR"
+                  >
+                    <ion-card>
+                      <ion-item>
+                        <h2 ion-text color="burnt">{{class.timeStart}}</h2>
+                        <p>{{class.timeEnd}}</p>
+                      </ion-item>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeEdit(class)"
+                        >
+                          <ion-icon name="md-create"></ion-icon>
+                          Edit
+                        </button>
+                      </ion-row>
+                      <ion-row>
+                        <button
+                          ion-button
+                          icon-left
+                          clear
+                          small
+                          block
+                          (click)="onClickTimeDelete('timeEarlyReleaseAllWithoutAPR', class)"
+                        >
+                          <ion-icon name="md-trash"></ion-icon>
+                          Delete
+                        </button>
+                      </ion-row>
+                    </ion-card>
+                  </ion-row>
+                  <ion-row>
+                    <ion-card>
+                      <button
+                        ion-button
+                        icon-left
+                        clear
+                        block
+                        (click)="onClickTimeAdd('timeEarlyReleaseAllWithoutAPR')"
+                      >
+                        <ion-icon name="md-add"></ion-icon>
+                        Add
+                      </button>
+                    </ion-card>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+            </div>
+            <div *ngSwitchCase="'schedule'">
+              <ion-row>
+                <ion-col>
+                  <ion-item no-lines no-padding>
+                    <ion-buttons start start>
+                      <button
+                        ion-button
+                        icon-only
+                        outline
+                        color="primary"
+                        (click)="onClickFirstWeek()"
+                      >
+                        <ion-icon name="ios-skip-backward"></ion-icon>
+                      </button>
+                      <button
+                        ion-button
+                        icon-only
+                        outline
+                        color="primary"
+                        (click)="onClickPrevWeek()"
+                      >
+                        <ion-icon name="ios-arrow-back"></ion-icon>
+                      </button>
+                    </ion-buttons>
+                  </ion-item>
+                </ion-col>
+                <ion-col class="centerText">
+                  <ion-label color="primary" class="startEnd"
+                    >({{startDate}}) to ({{endDate}})</ion-label
+                  >
+                </ion-col>
+                <ion-col>
+                  <ion-item no-lines no-padding>
+                    <ion-buttons end>
+                      <button
+                        ion-button
+                        icon-only
+                        outline
+                        color="primary"
+                        (click)="onClickNextWeek()"
+                      >
+                        <ion-icon name="ios-arrow-forward"></ion-icon>
+                      </button>
+                      <button
+                        ion-button
+                        icon-only
+                        outline
+                        color="primary"
+                        (click)="onClickLastWeek()"
+                      >
+                        <ion-icon name="ios-skip-forward"></ion-icon>
+                      </button>
+                    </ion-buttons>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row no-padding>
+                <ion-col *ngFor="let day of dataWeek">
+                  <ion-row class="centerText"
+                    ><ion-label color="primary" class="startEnd"
+                      >{{day.day}}</ion-label
+                    ></ion-row
+                  >
+                  <ion-row class="centerText"
+                    ><ion-label color="burnt" class="startEnd2"
+                      >{{day.date}}</ion-label
+                    ></ion-row
+                  >
+
+                  <ion-list>
+                    <ion-item>
+                      <ion-label>Needs Sync</ion-label>
+                      <ion-toggle
+                        [(ngModel)]="day.changed"
+                        disabled
+                        color="danger"
+                      ></ion-toggle>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label>Auto Edit</ion-label>
+                      <ion-toggle
+                        [(ngModel)]="day.autoEdit"
+                        (ionChange)="onChangeAutoEdit(day)"
+                        [disabled]="day.type!='R' && day.type!='L'"
+                      ></ion-toggle>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label>Auto Time</ion-label>
+                      <ion-toggle
+                        [(ngModel)]="day.autoTime"
+                        (ionChange)="onChangeAutoTime(day)"
+                        [disabled]="day.type=='N'"
+                      ></ion-toggle>
+                    </ion-item>
+                    <button
+                      ion-item
+                      (click)="onClickScheduleEditILunch(day)"
+                      [disabled]="day.autoTime"
+                    >
+                      <ion-label> Irregular Lunch </ion-label>
+                      <div item-content>{{day.iLunch}}</div>
+                    </button>
+                    <ion-item>
+                      <ion-label>Count Number</ion-label>
+                      <ion-toggle
+                        [(ngModel)]="day.countNumber"
+                        (ionChange)="onChangeAnchorPoint()"
+                        [disabled]="day.type=='N'"
+                      ></ion-toggle>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label>Anchor Point</ion-label>
+                      <ion-toggle
+                        [(ngModel)]="day.anchor"
+                        (ionChange)="onChangeAnchorPoint()"
+                        [disabled]="day.type=='N'"
+                      ></ion-toggle>
+                    </ion-item>
+                    <button ion-item (click)="onClickScheduleEditDayType(day)">
+                      <ion-label> Day Type </ion-label>
+                      <div item-content>{{day.type}}</div>
+                    </button>
+                    <button
+                      ion-item
+                      (click)="onClickScheduleEditDayNumber(day)"
+                      [disabled]="day.type=='N'"
+                    >
+                      <ion-label> Number </ion-label>
+                      <div item-content>{{day.number}}</div>
+                    </button>
+                    <button
+                      ion-item
+                      (click)="onClickScheduleEditDayLetters(day)"
+                      [disabled]="day.type=='N'"
+                    >
+                      <ion-label> Letters </ion-label>
+                      <div item-content>{{day.letters}}</div>
+                    </button>
+                  </ion-list>
+
+                  <div [ngSwitch]="day.letters.length">
+                    <div *ngSwitchCase="0">
+                      <ion-row *ngSwitchCase="0" [ngSwitch]="day.type">
+                        <ion-card *ngSwitchCase="''">
+                          <button
+                            ion-button
+                            icon-left
+                            clear
+                            block
+                            (click)="onClickScheduleAdd(day)"
+                          >
+                            <ion-icon name="md-add"></ion-icon>
+                            Add
+                          </button>
+                        </ion-card>
+                        <div *ngSwitchDefault></div>
+                      </ion-row>
+                    </div>
+                    <div *ngSwitchDefault>
+                      <ion-card *ngFor="let period of day.periods">
+                        <ion-card-content class="cardPeriod">
+                          <ion-row class="row">
+                            <ion-col col-3 class="cardPeriodLetter">
+                              <div class="cardOuter">
+                                <div
+                                  class="letterTextBox"
+                                  [ngSwitch]="period.letter"
+                                >
+                                  <div *ngSwitchCase="'Z'">AP</div>
+                                  <div *ngSwitchDefault>{{period.letter}}</div>
+                                </div>
+                              </div>
+                            </ion-col>
+                            <ion-col class="cardPeriodContent">
+                              <div class="cardOuter">
+                                <div class="classTextBox">
+                                  <ion-row>
+                                    {{period.timeStart}} - {{period.timeEnd}}
+                                  </ion-row>
+                                  <ion-row>
+                                    <!--<ion-col>
+                                      <button ion-button icon-only clear small block (click)="onClickEditScheduleLetter(day, period)">
+                                        <ion-icon name="md-create"></ion-icon>
+                                      </button>
+                                    </ion-col>-->
+                                    <ion-col [ngSwitch]="day.autoTime">
+                                      <button
+                                        *ngSwitchCase="false"
+                                        ion-button
+                                        clear
+                                        small
+                                        block
+                                        (click)="onClickEditScheduleTime(day, period)"
+                                      >
+                                        <ion-icon name="md-clock"></ion-icon>
+                                        Edit
+                                      </button>
+                                    </ion-col>
+                                    <!--<ion-col [ngSwitch]="day.autoTime">
+                                      <button *ngSwitchCase="false" ion-button clear small block (click)="onClickEditScheduleTimeEnd(day, period)">
+                                        <ion-icon name="md-clock"></ion-icon> End
+                                      </button>
+                                    </ion-col>-->
+                                  </ion-row>
+                                </div>
+                              </div>
+                            </ion-col>
+                          </ion-row>
+                        </ion-card-content>
+                      </ion-card>
+                      <!--<ion-card *ngSwitchCase="false">
+                        <button ion-button icon-left clear block (click)="onClickScheduleAddPeriod(day)">
+                          <ion-icon name="md-add"></ion-icon>
+                          Add
+                        </button>
+                      </ion-card>-->
+                    </div>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngSwitchCase="false">
+      <h2 class="notLoggedIn">
+        <p>
+          <ion-icon name="ios-thunderstorm-outline"></ion-icon>
+        </p>
+        Sorry, you must be logged in to use this feature!
+      </h2>
+    </div>
+  </div>
+</ion-content>

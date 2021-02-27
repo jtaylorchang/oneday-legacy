@@ -11,12 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 header('Content-type:application/json;charset=utf-8');
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -26,46 +26,43 @@ $sql = "SELECT * FROM users";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "dne_error");
     $people = "~~";
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
         $people = $people . $row['username'] . "~~";
     }
     $name = explode("~~", $people);
     $jsonResponse["status"] = true;
     $jsonResponse["response"] = "success";
-    
-    foreach($name as $value) {
-        if(strlen($value) > 0) {
+
+    foreach ($name as $value) {
+        if (strlen($value) > 0) {
             $result3 = mysqli_query($connect, "SELECT * FROM users WHERE username LIKE '" . $value . "'");
             $lastActive = "";
             $suspended = "";
             $uid = "";
-            while($row3 = $result3->fetch_assoc()) {
+            while ($row3 = $result3->fetch_assoc()) {
                 $username = $row3['username'];
                 $lastActive = $row3['lastActive'];
                 $suspended = $row3['suspended'];
                 $superUser = $row3['super'];
                 $uid = $row3['uid'];
-                if(strlen($lastActive) > 0) {
-
+                if (strlen($lastActive) > 0) {
                 } else {
                     $lastActive = "0000-00-00";
                 }
-                if(strlen($suspended) > 0) {
-
+                if (strlen($suspended) > 0) {
                 } else {
                     $suspended = "0";
                 }
-                if(strlen($uid) > 0) {
-
+                if (strlen($uid) > 0) {
                 } else {
                     $uid = "###";
                 }
             }
-            
+
             $jsonResponse[$username . "~lastActive"] = $lastActive;
             $jsonResponse[$username . "~suspended"] = $suspended;
             $jsonResponse[$username . "~uid"] = $uid;
@@ -79,5 +76,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

@@ -21,12 +21,12 @@ $cE = str_replace('"', "", str_replace("'", "", $_GET["compactE"]));
 $cF = str_replace('"', "", str_replace("'", "", $_GET["compactF"]));
 $cG = str_replace('"', "", str_replace("'", "", $_GET["compactG"]));
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -36,25 +36,27 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row = $result->fetch_assoc()) {
-        if($password == $row['password']) {
+    while ($row = $result->fetch_assoc()) {
+        if ($password == $row['password']) {
 
-            if(strpos($cA, "undefined") !== false || strpos($cB, "undefined") !== false || strpos($cC, "undefined") !== false || strpos($cD, "undefined") !== false || strpos($cE, "undefined") !== false || strpos($cF, "undefined") !== false || strpos($cG, "undefined") !== false) {
+            if (strpos($cA, "undefined") !== false || strpos($cB, "undefined") !== false || strpos($cC, "undefined") !== false || strpos($cD, "undefined") !== false || strpos($cE, "undefined") !== false || strpos($cF, "undefined") !== false || strpos($cG, "undefined") !== false) {
                 $jsonResponse = array("status" => false, "response" => "undefined_error");
             } else {
                 $result2 = mysqli_query($connect, "UPDATE users SET compactA='" . $cA . "', compactB='" . $cB . "', compactC='" . $cC . "', compactD='" . $cD . "', compactE='" . $cE . "', compactF='" . $cF . "', compactG='" . $cG . "' WHERE username LIKE '" . $username . "'");
 
-                $jsonResponse = array("status" => true,
-                                    "compactA" => $cA,
-                                    "compactB" => $cB,
-                                    "compactC" => $cC,
-                                    "compactD" => $cD,
-                                    "compactE" => $cE,
-                                    "compactF" => $cF,
-                                    "compactG" => $cG);
+                $jsonResponse = array(
+                    "status" => true,
+                    "compactA" => $cA,
+                    "compactB" => $cB,
+                    "compactC" => $cC,
+                    "compactD" => $cD,
+                    "compactE" => $cE,
+                    "compactF" => $cF,
+                    "compactG" => $cG
+                );
             }
         }
     }
@@ -65,5 +67,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

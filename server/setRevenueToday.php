@@ -34,11 +34,11 @@ $result = mysqli_query($connect, $sql);
 
 $jsonResponse = array("status" => true, "response" => "success");
 
-if(mysqli_num_rows($result) > 0) {
-    while($row = $result->fetch_assoc()) {
+if (mysqli_num_rows($result) > 0) {
+    while ($row = $result->fetch_assoc()) {
 
         $track = mysqli_query($connect, "UPDATE plus SET revenue='" . $revenue . "' WHERE dateStamp LIKE '" . $dt . "'");
-        if($track) {
+        if ($track) {
             $jsonResponse = array("status" => true, "response" => "success");
         } else {
             $jsonResponse = array("status" => false, "response" => "failure");
@@ -47,5 +47,3 @@ if(mysqli_num_rows($result) > 0) {
 }
 
 echo json_encode($jsonResponse);
-
-?>

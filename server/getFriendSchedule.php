@@ -15,7 +15,7 @@ $username = $_GET["username"];
 $password = md5($_GET["password"]);
 $friend = $_GET["friend"];
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
@@ -28,7 +28,7 @@ $cE = "";
 $cF = "";
 $cG = "";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -38,14 +38,14 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row = $result->fetch_assoc()) {
-        if($password == $row['password']) {
+    while ($row = $result->fetch_assoc()) {
+        if ($password == $row['password']) {
             $result2 = mysqli_query($connect, "SELECT * FROM users WHERE username LIKE '" . $friend . "'");
-            
-            while($row2 = $result2->fetch_assoc()) {
+
+            while ($row2 = $result2->fetch_assoc()) {
                 $cA = $row2['compactA'];
                 $cB = $row2['compactB'];
                 $cC = $row2['compactC'];
@@ -56,15 +56,17 @@ if(mysqli_num_rows($result) > 0) {
             }
             //$people = rtrim($people, "~~");
 
-            $jsonResponse = array("status" => true,
-                                "friend" => $friend,
-                                "compactA" => $cA,
-                                "compactB" => $cB,
-                                "compactC" => $cC,
-                                "compactD" => $cD,
-                                "compactE" => $cE,
-                                "compactF" => $cF,
-                                "compactG" => $cG);
+            $jsonResponse = array(
+                "status" => true,
+                "friend" => $friend,
+                "compactA" => $cA,
+                "compactB" => $cB,
+                "compactC" => $cC,
+                "compactD" => $cD,
+                "compactE" => $cE,
+                "compactF" => $cF,
+                "compactG" => $cG
+            );
         }
     }
 } else {
@@ -74,5 +76,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

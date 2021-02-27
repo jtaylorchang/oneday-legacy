@@ -17,17 +17,17 @@ header('Content-type:application/json;charset=utf-8');
 //update the existing if so
 //insert new if not
 
-$host_name_auth  = "CHANGE_ME";//change these to the correct table
+$host_name_auth  = "CHANGE_ME"; //change these to the correct table
 $database_auth   = "CHANGE_ME";
 $user_name_auth  = "CHANGE_ME";
 $pass_word_auth  = "CHANGE_ME";
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect_auth = mysqli_connect($host_name_auth, $user_name_auth, $pass_word_auth, $database_auth);
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
@@ -39,7 +39,7 @@ $targetDayDate = $_GET["date"];
 $targetDayType = $_GET["type"];
 $targetDayLetters = $_GET["letters"];
 $targetDayNumber = $_GET["number"];
-if($targetDayNumber == "undefined") {
+if ($targetDayNumber == "undefined") {
     $targetDayNumber = "";
 }
 $targetDayTimeType = $_GET["timeType"];
@@ -62,16 +62,16 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result_auth = mysqli_query($connect_auth, $sql);
 
-if(mysqli_num_rows($result_auth) > 0) {
+if (mysqli_num_rows($result_auth) > 0) {
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row_auth = $result_auth->fetch_assoc()) {
-        if($password == $row_auth['password']) {
-            if($row_auth['verified'] == "1" || $row_auth['verified'] == 1) {
+    while ($row_auth = $result_auth->fetch_assoc()) {
+        if ($password == $row_auth['password']) {
+            if ($row_auth['verified'] == "1" || $row_auth['verified'] == 1) {
                 //SUCCESS
                 $jsonResponse = array("status" => false, "response" => "fetch_error");
-                
+
                 $result = mysqli_query($connect, "SELECT * FROM schedule WHERE dayDate LIKE '" . $targetDayDate . "'");
-                if(mysqli_num_rows($result) > 0) {
+                if (mysqli_num_rows($result) > 0) {
                     //UPDATE
                     $result2 = mysqli_query($connect, "UPDATE schedule SET dayType='" . $targetDayType . "' WHERE dayDate LIKE '" . $targetDayDate . "'");
                     $result3 = mysqli_query($connect, "UPDATE schedule SET dayLetters='" . $targetDayLetters . "' WHERE dayDate LIKE '" . $targetDayDate . "'");
@@ -94,7 +94,7 @@ if(mysqli_num_rows($result_auth) > 0) {
                 } else {
                     //INSERT
                     $q = "INSERT INTO schedule (dayDate, dayType, dayLetters, dayNumber, dayTimeType, dayILunch, dayTimeP1, dayTimeP2, dayTimeP3, dayTimeP4, dayTimeP5, dayTimeP6, dayTimeP7, dayTimeP8, autoEdit, anchor, countNumber) VALUES ('" . $targetDayDate . "', '" . $targetDayType . "', '" . $targetDayLetters . "', '" . $targetDayNumber . "', '" . $targetDayTimeType . "', '" . $targetDayILunch . "', '" . $targetDayTimeP1 . "', '" . $targetDayTimeP2 . "', '" . $targetDayTimeP3 . "', '" . $targetDayTimeP4 . "', '" . $targetDayTimeP5 . "', '" . $targetDayTimeP6 . "', '" . $targetDayTimeP7 . "', '" . $targetDayTimeP8 . "', '" . $targetDayAutoEdit . "', '" . $targetDayAnchor . "', '" . $targetDayCountNumber . "')";
-                    if(mysqli_query($connect, $q)) {
+                    if (mysqli_query($connect, $q)) {
                         $jsonResponse = array("status" => true, "response" => "success");
                     } else {
                         $jsonResponse = array("status" => false, "response" => "insert_error");
@@ -108,10 +108,7 @@ if(mysqli_num_rows($result_auth) > 0) {
     }
 } else {
     $jsonResponse = array("status" => false, "response" => "dne_error");
-    
 }
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

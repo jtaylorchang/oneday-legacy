@@ -13,12 +13,12 @@ header('Content-type:application/json;charset=utf-8');
 
 $uid = $_GET["uid"];
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -28,13 +28,13 @@ $sql = "SELECT * FROM users WHERE uid LIKE '" . $uid . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "success");
-    while($row = $result->fetch_assoc()) {
-        if(strlen($row['username']) > 0) {
-            if($row['suspended'] == 1) {
-                if(strlen($uid) > 0) {
+    while ($row = $result->fetch_assoc()) {
+        if (strlen($row['username']) > 0) {
+            if ($row['suspended'] == 1) {
+                if (strlen($uid) > 0) {
                     $jsonResponse = array("status" => true, "response" => "suspended");
                 }
             }
@@ -47,5 +47,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

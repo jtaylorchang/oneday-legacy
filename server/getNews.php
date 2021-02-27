@@ -16,7 +16,7 @@ $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -27,14 +27,14 @@ $sql = "SELECT * FROM news";
 $result = mysqli_query($connect, $sql);
 
 $jsonResponse = array("status" => false, "response" => "dnr_error");
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $news;
     $announcements = [];
     $updates = [];
 
-    while($row = $result->fetch_assoc()) {
-        if($row['category'] == "announcement") {
+    while ($row = $result->fetch_assoc()) {
+        if ($row['category'] == "announcement") {
             $announcements[] = array(
                 "id" => $row['id'],
                 "dt" => $row['dt'],
@@ -43,7 +43,7 @@ if(mysqli_num_rows($result) > 0) {
                 "category" => $row['category']
             );
         }
-        if($row['category'] == "update") {
+        if ($row['category'] == "update") {
             $updates[] = array(
                 "id" => $row['id'],
                 "dt" => $row['dt'],
@@ -57,9 +57,11 @@ if(mysqli_num_rows($result) > 0) {
         "announcements" => $announcements,
         "updates" => $updates
     );
-    $jsonResponse = array("status" => true,
+    $jsonResponse = array(
+        "status" => true,
         "response" => "success",
-        "news" => $news);
+        "news" => $news
+    );
 } else {
     //not found
     $jsonResponse = array("status" => false, "response" => "dne_error");
@@ -67,5 +69,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

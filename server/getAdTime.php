@@ -14,12 +14,12 @@ header('Content-type:application/json;charset=utf-8');
 $username = $_GET["username"];
 $password = md5($_GET["password"]);
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -33,25 +33,27 @@ $lastAdDay = "";
 $today = date("Y") . "-" . date("m") . "-" . date("d");
 $shouldShow = false;
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row = $result->fetch_assoc()) {
-        if($password == $row['password']) {
+    while ($row = $result->fetch_assoc()) {
+        if ($password == $row['password']) {
             $lastAdDay = $row['lastActive'];
             $lastAdTime = $row['adTime'];
-            if($lastAdDay !== $today) {
+            if ($lastAdDay !== $today) {
                 $shouldShow = true;
             } else {
-                if((time() - $lastAdTime) >= 3600) {
+                if ((time() - $lastAdTime) >= 3600) {
                     $shouldShow = true;
                 }
             }
-            $jsonResponse = array("status" => true,
-                                "response" => "success",
-                                "lastActive" => $row['lastActive'],
-                                "adTime" => $row['adTime'],
-                                "shouldShow" => $shouldShow);
+            $jsonResponse = array(
+                "status" => true,
+                "response" => "success",
+                "lastActive" => $row['lastActive'],
+                "adTime" => $row['adTime'],
+                "shouldShow" => $shouldShow
+            );
         }
     }
 } else {
@@ -61,5 +63,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

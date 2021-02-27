@@ -15,12 +15,12 @@ $username = $_GET["username"];
 $password = md5($_GET["password"]);
 $friend = $_GET["friend"];
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -30,13 +30,13 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row = $result->fetch_assoc()) {
-        if($password == $row['password']) {
+    while ($row = $result->fetch_assoc()) {
+        if ($password == $row['password']) {
             $result2 = mysqli_query($connect, "SELECT * FROM users WHERE username LIKE '" . $friend . "'");
-            
+
             $cRequests = $row['requests'];
             $cRequestsFR = "";
             $nRequestsFR = "";
@@ -44,32 +44,32 @@ if(mysqli_num_rows($result) > 0) {
             $friends = $row['friends'];
 
             $nRequests = str_replace("~~" . $friend . "~R", "", $cRequests);
-            if(strlen($nRequests) == 2) {
+            if (strlen($nRequests) == 2) {
                 $nRequests = "";
             }
 
             $jsonResponse = array("status" => false, "response" => "unknown_error", "requests" => $cRequests, "friends" => $friends);
 
-            while($row2 = $result2->fetch_assoc()) {
+            while ($row2 = $result2->fetch_assoc()) {
                 $cRequestsFR = $row2['requests'];
                 $nRequestsFR = str_replace("~~" . $username . "~S", "", $cRequestsFR);
-                if(strlen($nRequestsFR) == 2) {
+                if (strlen($nRequestsFR) == 2) {
                     $nRequestsFR = "";
                 }
 
                 $cToN = mysqli_query($connect, "UPDATE users SET requests='" . $nRequests . "' WHERE username LIKE '" . $username . "'");
                 $cToNFR = mysqli_query($connect, "UPDATE users SET requests='" . $nRequestsFR . "' WHERE username LIKE '" . $friend . "'");
 
-                if($cToN && $cToNFR) {
+                if ($cToN && $cToNFR) {
                     $jsonResponse = array("status" => true, "requests" => $nRequests, "friends" => $friends);
                 } else {
                     $t2;
-                    if($cToN) {
+                    if ($cToN) {
                         $t2 = mysqli_query($connect, "UPDATE users SET requests='" . $nRequestsFR . "' WHERE username LIKE '" . $friend . "'");
-                    } elseif($cToNFR) {
+                    } elseif ($cToNFR) {
                         $t2 = mysqli_query($connect, "UPDATE users SET requests='" . $nRequests . "' WHERE username LIKE '" . $username . "'");
                     }
-                    if($t2) {
+                    if ($t2) {
                         $jsonResponse = array("status" => true, "requests" => $nRequests, "friends" => $friends);
                     } else {
                         $jsonResponse = array("status" => false, "response" => "unknown_error", "requests" => $cRequests, "friends" => $friends);
@@ -86,5 +86,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

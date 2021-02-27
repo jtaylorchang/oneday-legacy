@@ -14,12 +14,12 @@ header('Content-type:application/json;charset=utf-8');
 $username = $_GET["username"];
 $password = md5($_GET["password"]);
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 $people = "";
 $friends = "";
 $requests = "";
@@ -32,26 +32,28 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row = $result->fetch_assoc()) {
-        if($password == $row['password']) {
+    while ($row = $result->fetch_assoc()) {
+        if ($password == $row['password']) {
             $result2 = mysqli_query($connect, "SELECT * FROM users");
             $people = "~~";
-            while($row2 = $result2->fetch_assoc()) {
+            while ($row2 = $result2->fetch_assoc()) {
                 $people = $people . $row2['username'] . "~" . $row2['firstName'] . "~" . $row2['lastName'] . "~" . $row2['gradYear'] . "~" . $row2['verified'] . "~" . (substr_count($row2['friends'], "~~") - 1) . "~" . $row2['privacy'] . "~~";
             }
             //$people = rtrim($people, "~~");
 
-            $jsonResponse = array("status" => true,
-                                "people" => $people,
-                                "friends" => $row['friends'],
-                                "requests" => $row['requests']);
+            $jsonResponse = array(
+                "status" => true,
+                "people" => $people,
+                "friends" => $row['friends'],
+                "requests" => $row['requests']
+            );
 
             $friendNames = explode("~~", $row['friends']);
-            foreach($friendNames as $value) {
-                if(strlen($value) > 0) {
+            foreach ($friendNames as $value) {
+                if (strlen($value) > 0) {
 
                     $result3 = mysqli_query($connect, "SELECT * FROM users WHERE username LIKE '" . $value . "'");
                     $cA = "";
@@ -61,7 +63,7 @@ if(mysqli_num_rows($result) > 0) {
                     $cE = "";
                     $cF = "";
                     $cG = "";
-                    while($row3 = $result3->fetch_assoc()) {
+                    while ($row3 = $result3->fetch_assoc()) {
                         $cA = $row3['compactA'];
                         $cB = $row3['compactB'];
                         $cC = $row3['compactC'];
@@ -70,7 +72,7 @@ if(mysqli_num_rows($result) > 0) {
                         $cF = $row3['compactF'];
                         $cG = $row3['compactG'];
                     }
-                    
+
                     $jsonResponse[$value . "~A"] = $cA;
                     $jsonResponse[$value . "~B"] = $cB;
                     $jsonResponse[$value . "~C"] = $cC;
@@ -80,8 +82,6 @@ if(mysqli_num_rows($result) > 0) {
                     $jsonResponse[$value . "~G"] = $cG;
                 }
             }
-
-            
         }
     }
 } else {
@@ -91,5 +91,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

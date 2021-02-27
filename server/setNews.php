@@ -22,14 +22,14 @@ $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure after checking if the user already exists
+$jsonResponse; //respond with either success or failure after checking if the user already exists
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
-if($password == "CHANGE_ME") {
+if ($password == "CHANGE_ME") {
     $q = "INSERT INTO news (dt, title, content, category) VALUES ('" . $dt . "', '" . $title . "', '" . $content . "', '" . $category . "')";
     //echo($q);
-    if(mysqli_query($connect, $q)) {
+    if (mysqli_query($connect, $q)) {
         //echo("Success");
         $jsonResponse = array("status" => true, "response" => "success");
     } else {
@@ -44,5 +44,3 @@ if($password == "CHANGE_ME") {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

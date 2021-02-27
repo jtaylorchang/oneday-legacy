@@ -15,12 +15,12 @@ $username = $_GET["username"];
 $password = md5($_GET["password"]);
 $target = $_GET["target"];
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -30,12 +30,12 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row = $result->fetch_assoc()) {
-        if($password == $row['password']) {
-            if($row['verified'] == "1" || $row['verified'] == 1) {
+    while ($row = $result->fetch_assoc()) {
+        if ($password == $row['password']) {
+            if ($row['verified'] == "1" || $row['verified'] == 1) {
                 $b = mysqli_query($connect, "UPDATE users SET suspended='0' WHERE username LIKE '" . $target . "'");
                 $r = mysqli_query($connect, "UPDATE users SET privacy='2' WHERE username LIKE '" . $target . "'");
                 $jsonResponse = array("status" => true, "response" => "success");
@@ -51,5 +51,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

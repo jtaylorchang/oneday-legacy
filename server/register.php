@@ -11,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 header('Content-type:application/json;charset=utf-8');
 
-function clean($s) {
+function clean($s)
+{
     return preg_replace('/[^\p{L}\p{N}\s]/u', '', $s);
 }
 
@@ -33,12 +34,12 @@ $compactG = str_replace('"', "", str_replace("'", "", $_GET["compactG"]));
 $verified = 0;
 $privacy = 2;
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure after checking if the user already exists
+$jsonResponse; //respond with either success or failure after checking if the user already exists
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -48,8 +49,8 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(strlen($uid) > 0) {
-    if($uid == "[object Object]") {
+if (strlen($uid) > 0) {
+    if ($uid == "[object Object]") {
         $uid = "";
     }
 } else {
@@ -57,16 +58,16 @@ if(strlen($uid) > 0) {
 }
 
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //echo("Failure: user already exists");
     $jsonResponse = array("status" => false, "response" => "exists_error");
 } else {
-    if(strlen($username) >= 3) {
-        if(strlen($_GET["password"]) >= 4) {
-            if(strlen($gradYear >= 2)) {
+    if (strlen($username) >= 3) {
+        if (strlen($_GET["password"]) >= 4) {
+            if (strlen($gradYear >= 2)) {
                 $q = "INSERT INTO users (username, password, firstName, lastName, gradYear, friends, requests, compactA, compactB, compactC, compactD, compactE, compactF, compactG, verified, privacy, uid) VALUES ('" . $username . "', '" . $password . "', '" . $firstName . "', '" . $lastName . "', '" . $gradYear . "', '" . $friends . "', '" . $requests . "', '" . $compactA . "', '" . $compactB . "', '" . $compactC . "', '" . $compactD . "', '" . $compactE . "', '" . $compactF . "', '" . $compactG . "', " . $verified . ", " . $privacy . ", '" . $uid . "')";
                 //echo($q);
-                if(mysqli_query($connect, $q)) {
+                if (mysqli_query($connect, $q)) {
                     //echo("Success");
                     $jsonResponse = array("status" => true, "response" => "success");
                 } else {
@@ -86,10 +87,7 @@ if(mysqli_num_rows($result) > 0) {
         //echo("Failure: username too short");
         $jsonResponse = array("status" => false, "response" => "username_error");
     }
-    
 }
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

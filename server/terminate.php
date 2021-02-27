@@ -15,12 +15,12 @@ $username = $_GET["username"];
 $password = md5($_GET["password"]);
 $target = $_GET["target"];
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -30,28 +30,28 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "password_error");
-    while($row = $result->fetch_assoc()) {
-        if($password == $row['password']) {
-            if($row['super'] == "1" || $row['super'] == 1) {
+    while ($row = $result->fetch_assoc()) {
+        if ($password == $row['password']) {
+            if ($row['super'] == "1" || $row['super'] == 1) {
                 //$b = mysqli_query($connect, "DELETE FROM users WHERE username LIKE '" . $target . "'");
 
                 $result2 = mysqli_query($connect, "SELECT * FROM users WHERE username LIKE '" . $target . "'");
                 $people = "~~";
                 $people2 = "~~";
-                while($row2 = $result2->fetch_assoc()) {
+                while ($row2 = $result2->fetch_assoc()) {
                     $people = $row2['friends'];
                     $people2 = $row2['requests'];
                 }
                 $names = explode("~~", $people);
-                foreach($names as $value) {
-                    if(strlen($value) > 0) {
+                foreach ($names as $value) {
+                    if (strlen($value) > 0) {
                         $result3 = mysqli_query($connect, "SELECT * FROM users WHERE username LIKE '" . $value . "'");
                         $cFriends;
                         $nFriends;
-                        while($row3 = $result3->fetch_assoc()) {
+                        while ($row3 = $result3->fetch_assoc()) {
                             $cFriends = $row3['friends'];
                             $nFriends = str_replace("~~" . $target . "~~", "~~", $cFriends);
 
@@ -64,12 +64,12 @@ if(mysqli_num_rows($result) > 0) {
                 $people2 = str_replace("~S~~", "~~", $people2);
 
                 $names2 = explode("~~", $people2);
-                foreach($names2 as $value2) {
-                    if(strlen($value2) > 0) {
+                foreach ($names2 as $value2) {
+                    if (strlen($value2) > 0) {
                         $result4 = mysqli_query($connect, "SELECT * FROM users WHERE username LIKE '" . $value2 . "'");
                         $cRequests;
                         $nRequests;
-                        while($row4 = $result4->fetch_assoc()) {
+                        while ($row4 = $result4->fetch_assoc()) {
                             $cRequests = $row4['requests'];
                             $nRequests = str_replace("~~" . $target . "~R~~", "~~", $cRequests);
                             $nRequests = str_replace("~~" . $target . "~S~~", "~~", $nRequests);
@@ -106,5 +106,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

@@ -13,12 +13,12 @@ header('Content-type:application/json;charset=utf-8');
 
 $username = $_GET["username"];
 
-$host_name  = "CHANGE_ME";//change these to the correct table
+$host_name  = "CHANGE_ME"; //change these to the correct table
 $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -28,12 +28,12 @@ $sql = "SELECT * FROM users WHERE username LIKE '" . $username . "'";
 //echo($sql);
 $result = mysqli_query($connect, $sql);
 
-if(mysqli_num_rows($result) > 0) {
+if (mysqli_num_rows($result) > 0) {
     //found
     $jsonResponse = array("status" => false, "response" => "success");
-    while($row = $result->fetch_assoc()) {
-        if($row['verified'] == "1" || $row['verified'] == 1) {
-            if($row['super'] == "1" || $row['super'] == 1) {
+    while ($row = $result->fetch_assoc()) {
+        if ($row['verified'] == "1" || $row['verified'] == 1) {
+            if ($row['super'] == "1" || $row['super'] == 1) {
                 $jsonResponse = array("status" => true, "response" => "success");
             }
         }
@@ -45,5 +45,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>

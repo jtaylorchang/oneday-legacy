@@ -16,7 +16,7 @@ $database   = "CHANGE_ME";
 $user_name  = "CHANGE_ME";
 $pass_word  = "CHANGE_ME";
 
-$jsonResponse;//respond with either success or failure
+$jsonResponse; //respond with either success or failure
 
 $connect = mysqli_connect($host_name, $user_name, $pass_word, $database);
 
@@ -30,8 +30,8 @@ $result = mysqli_query($connect, $sql);
 
 $fixes = 0;
 
-if(mysqli_num_rows($result) > 0) {
-    while($row = $result->fetch_assoc()) {
+if (mysqli_num_rows($result) > 0) {
+    while ($row = $result->fetch_assoc()) {
         $username = $row['username'];
         $compactA = $row['compactA'];
         $compactB = $row['compactB'];
@@ -40,38 +40,40 @@ if(mysqli_num_rows($result) > 0) {
         $compactE = $row['compactE'];
         $compactF = $row['compactF'];
         $compactG = $row['compactG'];
-        if(substr_count($compactA, "~") !== substr_count($patch, "~")) {
+        if (substr_count($compactA, "~") !== substr_count($patch, "~")) {
             mysqli_query($connect, "UPDATE users SET compactA='" . $patch . "' WHERE username LIKE '" . $username . "'");
             $fixes++;
         }
-        if(substr_count($compactB, "~") !== substr_count($patch, "~")) {
+        if (substr_count($compactB, "~") !== substr_count($patch, "~")) {
             mysqli_query($connect, "UPDATE users SET compactB='" . $patch . "' WHERE username LIKE '" . $username . "'");
             $fixes++;
         }
-        if(substr_count($compactC, "~") !== substr_count($patch, "~")) {
+        if (substr_count($compactC, "~") !== substr_count($patch, "~")) {
             mysqli_query($connect, "UPDATE users SET compactC='" . $patch . "' WHERE username LIKE '" . $username . "'");
             $fixes++;
         }
-        if(substr_count($compactD, "~") !== substr_count($patch, "~")) {
+        if (substr_count($compactD, "~") !== substr_count($patch, "~")) {
             mysqli_query($connect, "UPDATE users SET compactD='" . $patch . "' WHERE username LIKE '" . $username . "'");
             $fixes++;
         }
-        if(substr_count($compactE, "~") !== substr_count($patch, "~")) {
+        if (substr_count($compactE, "~") !== substr_count($patch, "~")) {
             mysqli_query($connect, "UPDATE users SET compactE='" . $patch . "' WHERE username LIKE '" . $username . "'");
             $fixes++;
         }
-        if(substr_count($compactF, "~") !== substr_count($patch, "~")) {
+        if (substr_count($compactF, "~") !== substr_count($patch, "~")) {
             mysqli_query($connect, "UPDATE users SET compactF='" . $patch . "' WHERE username LIKE '" . $username . "'");
             $fixes++;
         }
-        if(substr_count($compactG, "~") !== substr_count($patch, "~")) {
+        if (substr_count($compactG, "~") !== substr_count($patch, "~")) {
             mysqli_query($connect, "UPDATE users SET compactG='" . $patch . "' WHERE username LIKE '" . $username . "'");
             $fixes++;
         }
     }
-    $jsonResponse = array("status" => true,
+    $jsonResponse = array(
+        "status" => true,
         "response" => "success",
-        "fixes" => $fixes);
+        "fixes" => $fixes
+    );
 } else {
     //not found
     $jsonResponse = array("status" => false, "response" => "dne_error");
@@ -79,5 +81,3 @@ if(mysqli_num_rows($result) > 0) {
 
 echo json_encode($jsonResponse);
 //$connect->close();
-
-?>
